@@ -1,0 +1,6 @@
+
+
+function run() {
+    $('canvas').hide();
+}
+

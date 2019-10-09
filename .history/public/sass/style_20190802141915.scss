@@ -1,0 +1,32 @@
+body {
+    text-align: center;
+    background-color: rgb(0, 68, 80)
+}
+
+h1 {
+    color: blue;
+}
+
+#menu {
+    width: 109px;
+    float: left;
+    margin-top: 100px;
+    margin-left: 0px;
+
+    ul {
+        text-align: left;
+        list-style: none;
+    }
+}
+
+#game {
+    border: 5px solid green;
+    display: inline-block;
+    margin-left: 0px;
+
+}
+
+
+* {
+    //border: 1px solid red;
+}
