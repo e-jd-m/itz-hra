@@ -1,4 +1,0 @@
-function run() {
-    $('canvas').hide();
-}
-

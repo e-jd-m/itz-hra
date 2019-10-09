@@ -1,7 +1,0 @@
-class Menu{
-    constructor() {
-        
-    }
-
-    hideMenu
-}
