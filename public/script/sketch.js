@@ -15,7 +15,7 @@ function preload() {
     maze = loadJSON('/maze');
     bullet = loadImage('img/bullet.png');
     wall = loadImage('img/wall.png')
-    menuImg = loadImage('img/menu.png')
+    menuImg = loadImage('img/menu.png') 
 }
 
 function setup() {
@@ -75,7 +75,7 @@ function draw() {
     background(0);
     //frameRate(30);
     //frm.push(frameRate());
-
+ 
 
 
     player.show(mouseX, mouseY, walls);
@@ -88,12 +88,13 @@ function draw() {
 
     menu.show();
     drawFramerate();
-    drawCursor(mouseX, mouseY, 15);
+    drawCursor(mouseX, mouseY, 15); 
 
     walls.forEach(wall => {
         //wall.show()
     });
 
+    
 
     for (const enemy of enemies) {
         enemy.show(mouseX, mouseY, walls);
@@ -115,7 +116,7 @@ function draw() {
 }
 
 function keyPressed() {
-    if (keyCode == 27) {
+    if (keyCode === 27) {
         menu.showMenu = !menu.showMenu;
         if (!menu.showMenu) {
             menu.hide();
@@ -140,32 +141,7 @@ function mouseClicked() {
 }
 
 
-function drawCursor(x, y, r) {
-    push();
-    noFill();
-    stroke(255, 0, 0);
-    ellipse(x, y, r);
-    line(x, y, x, y - r / 2);
-    line(x, y, x, y + r / 2);
-    line(x, y, x - r / 2, y);
-    line(x, y, x + r / 2, y);
-    pop();
-}
 
-function drawFramerate() {
-    if (menu.showFps) {
-        push();
-        fill(255);
-        if (frameCount % 5 == 0) {
-            fr = frameRate().toFixed(2);
-        }
-        stroke(255);
-        textSize(15);
-        text(fr, 10, 15);
-        pop();
-    }
-
-}
 
 function sendPos(pos) {
     socket.emit('pos', {

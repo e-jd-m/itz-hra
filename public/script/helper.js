@@ -13,3 +13,30 @@ function index(i, j, cols, rows) {
 
     return i + j * cols;
 }
+
+function drawCursor(x, y, r) {
+    push();
+    noFill();
+    stroke(255, 0, 0);
+    ellipse(x, y, r);
+    line(x, y, x, y - r / 2);
+    line(x, y, x, y + r / 2);
+    line(x, y, x - r / 2, y);
+    line(x, y, x + r / 2, y);
+    pop();
+}
+
+function drawFramerate() {
+    if (menu.showFps) {
+        push();
+        fill(255);
+        if (frameCount % 5 == 0) {
+            fr = frameRate().toFixed(2);
+        }
+        stroke(255);
+        textSize(15);
+        text(fr, 10, 15);
+        pop();
+    }
+
+}
