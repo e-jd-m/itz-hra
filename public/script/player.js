@@ -8,7 +8,7 @@ class Player {
         this.health = 100;
         this.ammo = 20;
         this.skins = ['points', 'lines', 'circle'];
-        this.skin = this.skins[0];
+        this.skin = this.skins[2];
 
 
     }

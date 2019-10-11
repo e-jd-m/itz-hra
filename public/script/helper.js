@@ -40,3 +40,7 @@ function drawFramerate() {
     }
 
 }
+
+function toggleMovement(allow) {
+    allowMovement = allow;
+}

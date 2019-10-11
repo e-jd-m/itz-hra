@@ -1,7 +1,7 @@
 let maze;
 let fr = 0;
 let walls = [];
-let speed;
+let speed, allowMovement = true;
 const cell_r = 100;
 let cells = [];
 let socket;
@@ -14,8 +14,8 @@ let menu;
 function preload() {
     maze = loadJSON('/maze');
     bullet = loadImage('img/bullet.png');
-    wall = loadImage('img/wall.png')
-    menuImg = loadImage('img/menu.png') 
+    wall = loadImage('img/wall.png');
+    menuImg = loadImage('img/menu.png');
 }
 
 function setup() {
@@ -33,7 +33,7 @@ function setup() {
     });
     for (let c of maze.cells) {
         if (c.walls[0]) {
-            walls.push(new Wall(c.x, c.y, c.x + c.a, c.y, ))
+            walls.push(new Wall(c.x, c.y, c.x + c.a, c.y))
         }
         if (c.walls[1]) {
             walls.push(new Wall(c.x + c.a, c.y, c.x + c.a, c.y + c.a));
@@ -75,7 +75,7 @@ function draw() {
     background(0);
     //frameRate(30);
     //frm.push(frameRate());
- 
+
 
 
     player.show(mouseX, mouseY, walls);
@@ -86,21 +86,21 @@ function draw() {
     player.showAmmo(15, 760, bullet);
 
 
-    menu.show();
+    menu.show(allowMovement);
     drawFramerate();
-    drawCursor(mouseX, mouseY, 15); 
+    drawCursor(mouseX, mouseY, 15);
 
     walls.forEach(wall => {
         //wall.show()
     });
 
-    
+
 
     for (const enemy of enemies) {
         enemy.show(mouseX, mouseY, walls);
     }
 
-    checkMovement();
+    checkMovement(allowMovement);
 
     if (mouseIsPressed && !menu.showMenu) {
         player.isShooting = true;
@@ -119,7 +119,7 @@ function keyPressed() {
     if (keyCode === 27) {
         menu.showMenu = !menu.showMenu;
         if (!menu.showMenu) {
-            menu.hide();
+            menu.hide(allowMovement);
         }
     }
 }
@@ -141,8 +141,6 @@ function mouseClicked() {
 }
 
 
-
-
 function sendPos(pos) {
     socket.emit('pos', {
         x: pos.x,
@@ -151,20 +149,22 @@ function sendPos(pos) {
 }
 
 
-function checkMovement() {
-    if (keyIsDown(65)) {
-        player.move_x(-speed * (deltaTime / 10), cell_r, cells);
-    }
+function checkMovement(allowMovement) {
+    if (allowMovement) {
+        if (keyIsDown(65)) {
+            player.move_x(-speed * (deltaTime / 10), cell_r, cells);
+        }
 
-    if (keyIsDown(68)) {
-        player.move_x(speed * (deltaTime / 10), cell_r, cells);
-    }
+        if (keyIsDown(68)) {
+            player.move_x(speed * (deltaTime / 10), cell_r, cells);
+        }
 
-    if (keyIsDown(87)) {
-        player.move_y(-speed * (deltaTime / 10), cell_r, cells);
-    }
+        if (keyIsDown(87)) {
+            player.move_y(-speed * (deltaTime / 10), cell_r, cells);
+        }
 
-    if (keyIsDown(83)) {
-        player.move_y(speed * (deltaTime / 10), cell_r, cells);
+        if (keyIsDown(83)) {
+            player.move_y(speed * (deltaTime / 10), cell_r, cells);
+        }
     }
 }

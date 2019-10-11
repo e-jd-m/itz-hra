@@ -8,30 +8,30 @@ class Menu {
         this.y = height / 4;
         this.showFps = true;
         this.allowSound = true;
-
+        this.bttns = [];
 
         this.showFpsCheck = createCheckbox('Fps', this.showFps);
         this.allowSoundCheck = createCheckbox('Sound', this.allowSound);
 
-
-        this.create();
-    }
-
-    create() {
+        let n = screen.width / 2 - width;
         this.showFpsCheck.position(this.x + 50, this.y + 100);
         this.showFpsCheck.hide();
 
         this.allowSoundCheck.position(this.x + 50, this.y + 130);
         this.allowSoundCheck.hide();
+
+        this.bttns.push(this.showFpsCheck);
+        this.bttns.push(this.allowSoundCheck);
+
     }
 
-    hide() {
 
-        this.showFpsCheck.hide();
-        this.allowSoundCheck.hide();
+    hide(allowMovement) {
+        this.bttns.forEach(bttns => bttns.hide());
+        toggleMovement(true);
     }
 
-    show() {
+    show(allowMovement) {
         if (this.showMenu) {
 
             push();
@@ -45,12 +45,13 @@ class Menu {
             push();
             stroke(255);
             fill(255);
-            this.showFpsCheck.show();
-            this.allowSoundCheck.show();
-            //text('Show Fps', this.x + 60, this.y + 105);
+            this.bttns.forEach(bttns => bttns.show());
             pop();
 
+            toggleMovement(false);
+
             $('*').css(`cursor`, `none`);
+
 
 
         } else {
