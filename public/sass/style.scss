@@ -1,15 +1,24 @@
 label {
-    color: white;
+	color: white;
 }
 
-html,body{
-    //text-align: center;
+body {
+	text-align: center;
+
+	background: #232423;
 }
 
-
-
-
+#game {
+	//width: 800px;
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: inline-block;
+	border: 1px solid white;
+}
 
 * {
-    //cursor: none;
+	//border: 1px solid red;
 }

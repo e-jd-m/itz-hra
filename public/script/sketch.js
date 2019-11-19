@@ -27,9 +27,9 @@ function setup() {
 
     menu = new Menu();
     player = new Player((random(maze.cells).x + cell_r / 2), (random(maze.cells).y + cell_r / 2), {
-        r: random(0, 255),
-        g: random(0, 255),
-        b: random(0, 255)
+        r: random(50, 255),
+        g: random(50, 255),
+        b: random(50, 255)
     });
     for (let c of maze.cells) {
         if (c.walls[0]) {
@@ -48,6 +48,11 @@ function setup() {
         cells.push(new Cell(c.i, c.j, c.a, c.walls));
 
     }
+
+    walls.push(new Wall(0, 0, width, 0));
+    walls.push(new Wall(0, 0, 0, height));
+    walls.push(new Wall(0, height, width, height));
+    walls.push(new Wall(width, 0, width, height));
 
 
     speed = 2;
@@ -73,7 +78,7 @@ let frm = [];
 
 function draw() {
     background(0);
-    //frameRate(30);
+    //frameRate(5);
     //frm.push(frameRate());
 
 
@@ -86,13 +91,17 @@ function draw() {
     player.showAmmo(15, 760, bullet);
 
 
-    menu.show(allowMovement);
+    menu.show();
     drawFramerate();
     drawCursor(mouseX, mouseY, 15);
 
     walls.forEach(wall => {
         //wall.show()
     });
+
+    for (let i = walls.length - 5; i < walls.length; ++i) {
+        walls[i].show();
+    }
 
 
 
@@ -119,7 +128,7 @@ function keyPressed() {
     if (keyCode === 27) {
         menu.showMenu = !menu.showMenu;
         if (!menu.showMenu) {
-            menu.hide(allowMovement);
+            menu.hide();
         }
     }
 }

@@ -7,9 +7,9 @@ class Wall {
     show() {
         stroke(255);
         //ellipse(this.a.x, this.a.y, 3);
-        line(this.a.x - 1, this.a.y + 3, this.b.x, this.b.y + 3);
-        line(this.a.x, this.a.y + 1, this.b.x - 2, this.b.y);
-        line(this.a.x + 3, this.a.y - 3, this.b.x, this.b.y);
+        //line(this.a.x - 1, this.a.y + 3, this.b.x, this.b.y + 3);
+        //line(this.a.x, this.a.y + 1, this.b.x - 2, this.b.y);
+        //line(this.a.x + 3, this.a.y - 3, this.b.x, this.b.y);
         line(this.a.x, this.a.y, this.b.x, this.b.y);
 
         /* if (this.a.y == this.b.y) {

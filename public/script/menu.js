@@ -23,15 +23,19 @@ class Menu {
         this.bttns.push(this.showFpsCheck);
         this.bttns.push(this.allowSoundCheck);
 
+        for (let el of this.bttns) {
+            el.parent(document.querySelector('#menu'));
+        }
+
     }
 
 
-    hide(allowMovement) {
+    hide() {
         this.bttns.forEach(bttns => bttns.hide());
         toggleMovement(true);
     }
 
-    show(allowMovement) {
+    show() {
         if (this.showMenu) {
 
             push();
@@ -50,7 +54,7 @@ class Menu {
 
             toggleMovement(false);
 
-            $('*').css(`cursor`, `none`);
+            //$('*').css(`cursor`, `none`);
 
 
 
