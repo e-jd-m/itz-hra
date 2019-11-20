@@ -8,7 +8,7 @@ let socket;
 let enemies = [];
 let bullet, wall, menuImg;
 let menu;
-
+let devMode = false;
 
 
 function preload() {
@@ -91,13 +91,18 @@ function draw() {
     player.showAmmo(15, 760, bullet);
 
 
-    menu.show();
+    menu.show(devMode);
     drawFramerate();
     drawCursor(mouseX, mouseY, 15);
 
-    walls.forEach(wall => {
-        //wall.show()
-    });
+    if (menu.devMode) {
+        walls.forEach(wall => {
+            wall.show()
+        });
+        player.ammo = player.maxAmmo;
+        //player.health = player.maxHealtht;
+
+    }
 
     for (let i = walls.length - 5; i < walls.length; ++i) {
         walls[i].show();

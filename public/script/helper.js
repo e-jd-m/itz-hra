@@ -44,3 +44,8 @@ function drawFramerate() {
 function toggleMovement(allow) {
     allowMovement = allow;
 }
+
+function toggleDevMode(bool) {
+    devMode = bool;
+    return devMode;
+}

@@ -6,7 +6,9 @@ class Player {
         this.isShooting = false;
         this.col = col;
         this.health = 100;
+        this.maxHealth = 100;
         this.ammo = 20;
+        this.maxAmmo = 20;
         this.skins = ['points', 'lines', 'circle'];
         this.skin = this.skins[2];
 
@@ -133,7 +135,7 @@ class Player {
         fill(255);
         stroke(255);
         textSize(10);
-        text(`${this.health}/100`, x + 15, y + 3);
+        text(`${this.health}/${this.maxHealth}`, x + 15, y + 3);
         pop();
     }
 
@@ -152,7 +154,7 @@ class Player {
         fill(255);
         stroke(255);
         textSize(10);
-        text(`${this.ammo}/20`, x + 15, y + 3);
+        text(`${this.ammo}/${this.maxAmmo}`, x + 15, y + 3);
         pop();
     }
 
