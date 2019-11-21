@@ -10,6 +10,7 @@ let bullet, wall, menuImg;
 let menu;
 let devMode = false;
 
+p5.disableFriendlyErrors = true;
 
 function preload() {
     maze = loadJSON('/maze');
@@ -62,19 +63,19 @@ function setup() {
         y: player.pos.y,
         col: player.col
     });
-    socket.on('newPl', data => {
+    /*socket.on('newPl', data => {
         enemies.push({
             player: new Player(data.player.x, data.player.y, data.player.col),
             id: data.id
         })
-    });
+    });*/
 
 
 
     preventScrolling();
 }
 let frm = [];
-
+let prof = [];
 
 function draw() {
     background(0);
@@ -109,10 +110,10 @@ function draw() {
     }
 
 
-
+    /*
     for (const enemy of enemies) {
         enemy.show(mouseX, mouseY, walls);
-    }
+    }*/
 
     checkMovement(allowMovement);
 
@@ -135,6 +136,7 @@ function keyPressed() {
         if (!menu.showMenu) {
             menu.hide();
         }
+
     }
 }
 

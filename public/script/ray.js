@@ -41,8 +41,8 @@ class Ray {
             const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
             const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
 
-            //&& u >= 0 && u <= 1
-            if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+            //&& u >= 0 && u <= 1     && u <= 1
+            if (t >= 0 && t <= 1 && u >= 0) {
                 pts.push(createVector(x1 + t * (x2 - x1), y1 + t * (y2 - y1)));
             }
         }
@@ -50,7 +50,9 @@ class Ray {
         let d = Infinity;
         let closest;
         for (const p of pts) {
-            let t = Math.sqrt((this.pos.x - p.x) * (this.pos.x - p.x) + (this.pos.y - p.y) * (this.pos.y - p.y));
+            let t = getDistance(this.pos.x, this.pos.y, p.x, p.y);
+            //console.log(t);
+            //Math.sqrt((this.pos.x - p.x) * (this.pos.x - p.x) + (this.pos.y - p.y) * (this.pos.y - p.y));
             if (t < d) {
                 d = t;
                 closest = p;
