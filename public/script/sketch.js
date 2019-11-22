@@ -153,7 +153,8 @@ function mouseClicked() {
     if (player.ammo === 0) {
         return
     }
-    player.ammo -= 1;
+    if (!menu.showMenu)
+        player.ammo -= 1;
 }
 
 
