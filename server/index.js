@@ -4,13 +4,12 @@ const app = express();
 const server = app.listen(42069);
 
 const io = require('socket.io')(server);
-
+io.origins('http://localhost:42069');
 const maze = require('./src/maze');
 
 app.use(express.static(`../public`));
-let cells = maze.createMaze();
 
-let currentPlayers = [];
+let cells = maze.createMaze();
 
 app.get(`/maze`, (req, res) => {
 
@@ -20,26 +19,57 @@ app.get(`/maze`, (req, res) => {
 
 });
 
-let playerSetUp;
+let players = [];
 
-app.post('/setUp', (req, res) => {
-    console.log(req);
+io.on('connection', socket => {
+    //console.log(socket.id);
+    socket.on('test', data => {
+        console.log('recieved: ', data, 'from' + socket.id);
+        socket.broadcast.emit('test', data);
 
-    res.send('OK')
+    });
+    socket.on('disconnect', () => {
 
-})
+        let index = findIndex(socket.id, players);
+        players.splice(index, 1);
+        socket.broadcast.emit('playerDis', index);
 
-io.sockets.on('connection', socket => {
-    socket.on(`newPl`, player => {
+    })
+    socket.on('newPl', data => {
+        //console.log('New  Player');
+        //console.log(data);
+        if (!!players.length) {
+            socket.emit('players', players);
+        }
+        players.push({
+            x: data.x,
+            y: data.y,
+            col: data.col,
+            id: socket.id
+        })
+
+        socket.broadcast.emit('newPl', data);
+
+    })
+    socket.on('pos', pos => {
 
         let data = {
-            player,
-            id: Math.random()
+            x: pos.x,
+            y: pos.y,
+            index: findIndex(socket.id, players)
         }
-        currentPlayers.push(data);
-        socket.broadcast.emit(`newPl`, data);
-    })
-    socket.on('pos', data => {
         socket.broadcast.emit('pos', data);
-    })
-})
+    });
+});
+
+
+
+function findIndex(sId, players) {
+    let index;
+    for (let i = 0; i < players.length; i++) {
+        if (players[i].id === sId) {
+            return index;
+
+        }
+    }
+}
