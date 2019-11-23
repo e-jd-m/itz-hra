@@ -20,6 +20,7 @@ app.get(`/maze`, (req, res) => {
 });
 
 let players = [];
+let currentSockets = [];
 
 io.on('connection', socket => {
     //console.log(socket.id);
@@ -29,8 +30,19 @@ io.on('connection', socket => {
 
     });
     socket.on('disconnect', () => {
+        console.log('user has dis');
+        let index = currentSockets.indexOf(socket);
 
-        let index = findIndex(socket.id, players);
+
+        /*for (let i = 0; i < players.length; i++) {
+            if (players[i].id == socket.id) {
+                index = i;
+            }
+        }*/
+        console.log(index);
+        /*let index = findIndex(socket.id, players);
+        console.log(index);*/
+        currentSockets.splice(index, 1);
         players.splice(index, 1);
         socket.broadcast.emit('playerDis', index);
 
@@ -41,22 +53,24 @@ io.on('connection', socket => {
         if (!!players.length) {
             socket.emit('players', players);
         }
+
         players.push({
             x: data.x,
             y: data.y,
             col: data.col,
             id: socket.id
         })
+        currentSockets.push(socket);
 
         socket.broadcast.emit('newPl', data);
 
     })
     socket.on('pos', pos => {
-
+        let index = currentSockets.indexOf(socket);
         let data = {
             x: pos.x,
             y: pos.y,
-            index: findIndex(socket.id, players)
+            index
         }
         socket.broadcast.emit('pos', data);
     });
@@ -67,7 +81,7 @@ io.on('connection', socket => {
 function findIndex(sId, players) {
     let index;
     for (let i = 0; i < players.length; i++) {
-        if (players[i].id === sId) {
+        if (players[i].id == sId) {
             return index;
 
         }

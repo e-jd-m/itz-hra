@@ -80,7 +80,7 @@ function setup() {
     });
     socket.on('newPl', data => {
         enemies.push({
-            player: new Player(data.x, data.y, data.col),
+            player: new Player(data.x, data.y, data.col)
         })
         //console.log(enemies);
 
@@ -89,12 +89,14 @@ function setup() {
         for (const p of data) {
             enemies.push({
                 player: new Player(p.x, p.y, p.col)
-            })
+            });
         }
     })
     socket.on('playerDis', index => {
+        console.log('dis');
         console.log(index);
         enemies.splice(index, 1);
+        console.log(enemies);
 
     });
 
@@ -135,11 +137,12 @@ function draw() {
         walls.forEach(wall => {
             wall.show()
         });
-        if (enemies.length > 0) {
-            for (let i = 0; i < enemies.length; ++i) {
-                enemies[i].player.show(10, 10, walls);
-            }
-        }
+
+        /*
+        for (let i = 0; i < enemies.length; ++i) {
+            enemies[i].player.show(10, 10, walls);
+        }*/
+
         player.ammo = player.maxAmmo;
         //player.health = player.maxHealtht;
 
@@ -150,11 +153,11 @@ function draw() {
     }
 
 
-    if (enemies.length > 0) {
-        for (let i = 0; i < enemies.length; ++i) {
-            enemies[i].player.show(10, 10, walls);
-        }
+
+    for (let i = 0; i < enemies.length; ++i) {
+        enemies[i].player.show(10, 10, walls);
     }
+
 
 
     checkMovement(allowMovement);
