@@ -2,13 +2,13 @@ let maze;
 let fr = 0;
 let walls = [];
 let speed, allowMovement = true;
-const cell_r = 100;
+let cell_r;
 let cells = [];
 let socket;
 let enemies = [];
 let bullet, wall, menuImg;
 let menu;
-let devMode = false;
+let devMode = true;
 
 p5.disableFriendlyErrors = true;
 
@@ -27,11 +27,23 @@ function setup() {
     noCursor();
 
     menu = new Menu();
+    cell_r = maze.cells[0].a;
     player = new Player((random(maze.cells).x + cell_r / 2), (random(maze.cells).y + cell_r / 2), {
         r: random(50, 255),
         g: random(50, 255),
         b: random(50, 255)
     });
+
+    /*player = new Player((maze.cells[5].x + cell_r / 2), (maze.cells[5].y + cell_r / 2), {
+        r: random(50, 255),
+        g: random(50, 255),
+        b: random(50, 255)
+    });*/
+
+    //console.log(player);
+
+
+
     for (let c of maze.cells) {
         if (c.walls[0]) {
             walls.push(new Wall(c.x, c.y, c.x + c.a, c.y))
@@ -58,18 +70,41 @@ function setup() {
 
     speed = 2;
     socket = io.connect('http://localhost:42069');
+
+
+
     socket.emit('newPl', {
         x: player.pos.x,
         y: player.pos.y,
         col: player.col
     });
-    /*socket.on('newPl', data => {
+    socket.on('newPl', data => {
         enemies.push({
-            player: new Player(data.player.x, data.player.y, data.player.col),
-            id: data.id
+            player: new Player(data.x, data.y, data.col),
         })
-    });*/
+        //console.log(enemies);
 
+    });
+    socket.on('players', data => {
+        for (const p of data) {
+            enemies.push({
+                player: new Player(p.x, p.y, p.col)
+            })
+        }
+    })
+    socket.on('playerDis', index => {
+        console.log(index);
+        enemies.splice(index, 1);
+
+    });
+
+    socket.on('pos', data => {
+        enemies[data.index].player.set_pos(data.x, data.y);
+    })
+
+    socket.on('test', data => {
+        console.log('succ :)', data);
+    });
 
 
     preventScrolling();
@@ -100,6 +135,11 @@ function draw() {
         walls.forEach(wall => {
             wall.show()
         });
+        if (enemies.length > 0) {
+            for (let i = 0; i < enemies.length; ++i) {
+                enemies[i].player.show(10, 10, walls);
+            }
+        }
         player.ammo = player.maxAmmo;
         //player.health = player.maxHealtht;
 
@@ -110,10 +150,12 @@ function draw() {
     }
 
 
-    /*
-    for (const enemy of enemies) {
-        enemy.show(mouseX, mouseY, walls);
-    }*/
+    if (enemies.length > 0) {
+        for (let i = 0; i < enemies.length; ++i) {
+            enemies[i].player.show(10, 10, walls);
+        }
+    }
+
 
     checkMovement(allowMovement);
 
@@ -125,63 +167,9 @@ function draw() {
 
 
 
+
     menu.saveChanges();
 
     sendPos(player.pos);
 }
 
-function keyPressed() {
-    if (keyCode === 27) {
-        menu.showMenu = !menu.showMenu;
-        if (!menu.showMenu) {
-            menu.hide();
-        }
-
-    }
-}
-
-
-function mouseClicked() {
-    /* let total = 0;
-     for (let item of frm) {
-         total += item;
-
-     }
-     console.log(total / frm.length);*/
-
-
-    if (player.ammo === 0) {
-        return
-    }
-    if (!menu.showMenu)
-        player.ammo -= 1;
-}
-
-
-function sendPos(pos) {
-    socket.emit('pos', {
-        x: pos.x,
-        y: pos.y
-    });
-}
-
-
-function checkMovement(allowMovement) {
-    if (allowMovement) {
-        if (keyIsDown(65)) {
-            player.move_x(-speed * (deltaTime / 10), cell_r, cells);
-        }
-
-        if (keyIsDown(68)) {
-            player.move_x(speed * (deltaTime / 10), cell_r, cells);
-        }
-
-        if (keyIsDown(87)) {
-            player.move_y(-speed * (deltaTime / 10), cell_r, cells);
-        }
-
-        if (keyIsDown(83)) {
-            player.move_y(speed * (deltaTime / 10), cell_r, cells);
-        }
-    }
-}

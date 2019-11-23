@@ -57,3 +57,59 @@ function getDistance(x1, y1, x2, y2) {
     return (dx * dx + dy * dy);
 }
 
+function keyPressed() {
+    if (keyCode === 27) {
+        menu.showMenu = !menu.showMenu;
+        if (!menu.showMenu) {
+            menu.hide();
+        }
+
+
+    }
+}
+
+
+function mouseClicked() {
+    /* let total = 0;
+     for (let item of frm) {
+         total += item;
+
+     }
+     console.log(total / frm.length);*/
+
+
+    if (player.ammo === 0) {
+        return
+    }
+    if (!menu.showMenu)
+        player.ammo -= 1;
+}
+
+
+function sendPos(pos) {
+    socket.emit('pos', {
+        x: pos.x,
+        y: pos.y
+    });
+}
+
+
+function checkMovement(allowMovement) {
+    if (allowMovement) {
+        if (keyIsDown(65)) {
+            player.move_x(-speed * (deltaTime / 10), cell_r, cells);
+        }
+
+        if (keyIsDown(68)) {
+            player.move_x(speed * (deltaTime / 10), cell_r, cells);
+        }
+
+        if (keyIsDown(87)) {
+            player.move_y(-speed * (deltaTime / 10), cell_r, cells);
+        }
+
+        if (keyIsDown(83)) {
+            player.move_y(speed * (deltaTime / 10), cell_r, cells);
+        }
+    }
+}
