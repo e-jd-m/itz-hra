@@ -20,7 +20,7 @@ app.get(`/maze`, (req, res) => {
 
 });
 
-let players = [];
+let players = {};
 //let currentSockets = [];
 
 io.on('connection', socket => {
@@ -31,52 +31,54 @@ io.on('connection', socket => {
 
     });
     socket.on('disconnect', () => {
-        console.log('user has dis');
-        let index = players.findIndex(element => element.id == socket.id);
 
-
-
-        console.log(index);
-
-        //currentSockets.splice(index, 1);
-        players.splice(index, 1);
-        socket.broadcast.emit('playerDis', index);
+        delete players[socket.id];
+        socket.broadcast.emit('playerDis', socket.id);
 
     })
     socket.on('newPl', data => {
         //console.log('New  Player');
         //console.log(data);
-        if (!!players.length) {
-            socket.emit('players', players);
-        }
 
-        players.push({
+
+        socket.emit('players', players);
+
+        //console.log(players);
+
+        players[socket.id] = {
             x: data.x,
             y: data.y,
             col: data.col,
             id: socket.id
-        })
-        //currentSockets.push(socket);
-        //console.log(Object.keys(players[0]));
+        }
 
-        socket.broadcast.emit('newPl', data);
+        let resp = {
+            x: data.x,
+            y: data.y,
+            col: data.col,
+            id: socket.id
+        }
+
+        socket.broadcast.emit('newPl', resp);
 
     })
     socket.on('pos', pos => {
-        let index = players.findIndex(element => element.id == socket.id);
+
         let data = {
             x: pos.x,
             y: pos.y,
-            index
+            id: socket.id
+
         }
         socket.broadcast.emit('pos', data);
     });
     socket.on('shooting', data => {
-        let index = players.findIndex(element => element.id == socket.id);
+
         let resp = {
             x: data.x,
             y: data.y,
-            index
+            id: socket.id
+
         }
         socket.broadcast.emit('shooting', resp);
     });

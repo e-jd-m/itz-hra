@@ -115,3 +115,10 @@ function checkMovement(allowMovement) {
 }
 
 
+function addAmmo(p) {
+    if (p.ammo < p.maxAmmo) {
+        p.ammo += 1;
+    }
+
+}
+

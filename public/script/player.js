@@ -3,7 +3,6 @@ class Player {
         this.pos = createVector(x, y);
         this.r = 23;
         this.aim = new Ray(this.pos);
-        this.isShooting = false;
         this.col = col;
         this.health = 100;
         this.maxHealth = 100;
@@ -15,7 +14,7 @@ class Player {
 
     }
 
-    show(sX, sY, walls) {
+    show() {
         push();
         //fill(this.col.r, this.col.g, this.col.b);
         //noStroke();
@@ -55,13 +54,7 @@ class Player {
             ellipse(this.pos.x, this.pos.y, this.r * 2);
         }
 
-        stroke(255);
-        /*
-        if (this.isShooting) {
-            let point = this.aim.checkInter(sX, sY, walls);
-            line(this.pos.x, this.pos.y, point.x, point.y);
 
-        }*/
         pop();
     }
 
@@ -124,16 +117,18 @@ class Player {
     }
 
     shoot(sX, sY, pt = null) {
-        push();
-        strokeWeight(5);
-        if (pt == null) {
-            pt = this.aim.checkInter(sX, sY, walls);
-        }
-        drawingContext.setLineDash([10, 20]);
-        line(this.pos.x, this.pos.y, pt.x, pt.y);
-        pop();
+        if (this.ammo > 0) {
+            push();
+            strokeWeight(5);
+            if (pt == null) {
+                pt = this.aim.checkInter(sX, sY, walls);
+            }
+            drawingContext.setLineDash([10, 20]);
+            line(this.pos.x, this.pos.y, pt.x, pt.y);
+            pop();
 
-        return pt;
+            return pt;
+        }
 
     }
 

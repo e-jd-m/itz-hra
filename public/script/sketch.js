@@ -5,10 +5,12 @@ let speed, allowMovement = true;
 let cell_r;
 let cells = [];
 let socket;
-let enemies = [];
+let enemies = {};
 let bullet, wall, menuImg;
 let menu;
 let devMode = true;
+
+const defGameServer = 'http://localhost:42069';
 
 p5.disableFriendlyErrors = true;
 
@@ -69,7 +71,8 @@ function setup() {
 
 
     speed = 2;
-    socket = io.connect('http://localhost:42069');
+    let address = prompt("zadej adresu: ", defGameServer);
+    socket = io.connect(address);
 
 
 
@@ -79,34 +82,46 @@ function setup() {
         col: player.col
     });
     socket.on('newPl', data => {
-        enemies.push({
+        enemies[data.id] = {
             player: new Player(data.x, data.y, data.col)
-        })
-        //console.log(enemies);
+        }
+
 
     });
     socket.on('players', data => {
-        for (const p of data) {
-            enemies.push({
-                player: new Player(p.x, p.y, p.col)
-            });
-        }
-        console.log(enemies);
-    })
-    socket.on('playerDis', index => {
-        console.log('dis');
-        console.log(index);
-        enemies.splice(index, 1);
 
+        for (let [key, value] of Object.entries(data)) {
+            enemies[key] = {
+                player: new Player(value.x, value.y, value.col)
+            }
+        }
+        console.table(enemies);
+    })
+    socket.on('playerDis', id => {
+        delete enemies[id];
 
     });
 
     socket.on('pos', data => {
-        enemies[data.index].player.set_pos(data.x, data.y);
+        //console.log(data.index);
+        const enemy = enemies[data.id];
+        if (!enemy) {
+            console.error('missing  enemy');
+            return;
+        }
+        enemy.player.set_pos(data.x, data.y);
+
     })
 
     socket.on('shooting', data => {
-        enemies[data.index].player.shoot(data.x, data.y);
+        const enemy = enemies[data.id];
+        if (!enemy) {
+            console.error('missing  enemy');
+            return;
+        }
+        //console.log(data.x, data.y);
+        enemy.player.shoot(data.x, data.y);
+
     });
 
     socket.on('test', data => {
@@ -115,6 +130,11 @@ function setup() {
 
 
     preventScrolling();
+
+    const interval = setInterval(function () {
+        addAmmo(player);
+    }, 2000);
+
 }
 let frm = [];
 let prof = [];
@@ -151,15 +171,13 @@ function draw() {
 
     }
 
-    for (let i = walls.length - 5; i < walls.length; ++i) {
-        walls[i].show();
+    for (let [key, value] of Object.entries(enemies)) {
+        enemies[key].player.show();
     }
 
 
 
-    for (let i = 0; i < enemies.length; ++i) {
-        enemies[i].player.show(10, 10, walls);
-    }
+
 
 
 
@@ -174,9 +192,10 @@ function draw() {
 
 
 
-
     menu.saveChanges();
 
     sendPos(player.pos);
+
+
 }
 
