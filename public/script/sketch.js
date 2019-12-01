@@ -91,18 +91,23 @@ function setup() {
                 player: new Player(p.x, p.y, p.col)
             });
         }
+        console.log(enemies);
     })
     socket.on('playerDis', index => {
         console.log('dis');
         console.log(index);
         enemies.splice(index, 1);
-        console.log(enemies);
+
 
     });
 
     socket.on('pos', data => {
         enemies[data.index].player.set_pos(data.x, data.y);
     })
+
+    socket.on('shooting', data => {
+        enemies[data.index].player.shoot(data.x, data.y);
+    });
 
     socket.on('test', data => {
         console.log('succ :)', data);
@@ -118,8 +123,6 @@ function draw() {
     background(0);
     //frameRate(5);
     //frm.push(frameRate());
-
-
 
     player.show(mouseX, mouseY, walls);
 
@@ -163,9 +166,10 @@ function draw() {
     checkMovement(allowMovement);
 
     if (mouseIsPressed && !menu.showMenu) {
-        player.isShooting = true;
+        let pt = player.shoot(mouseX, mouseY);
+        socket.emit('shooting', { x: mouseX, y: mouseY });
     } else {
-        player.isShooting = false;
+        //player.isShooting = false;
     }
 
 

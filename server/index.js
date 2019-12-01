@@ -1,10 +1,11 @@
 const express = require(`express`);
 
+const port = 42069;
 const app = express();
-const server = app.listen(42069);
+const server = app.listen(port);
 
 const io = require('socket.io')(server);
-io.origins('http://localhost:42069');
+io.origins(`http://localhost:${port}`);
 const maze = require('./src/maze');
 
 app.use(express.static(`../public`));
@@ -20,7 +21,7 @@ app.get(`/maze`, (req, res) => {
 });
 
 let players = [];
-let currentSockets = [];
+//let currentSockets = [];
 
 io.on('connection', socket => {
     //console.log(socket.id);
@@ -31,18 +32,13 @@ io.on('connection', socket => {
     });
     socket.on('disconnect', () => {
         console.log('user has dis');
-        let index = currentSockets.indexOf(socket);
+        let index = players.findIndex(element => element.id == socket.id);
 
 
-        /*for (let i = 0; i < players.length; i++) {
-            if (players[i].id == socket.id) {
-                index = i;
-            }
-        }*/
+
         console.log(index);
-        /*let index = findIndex(socket.id, players);
-        console.log(index);*/
-        currentSockets.splice(index, 1);
+
+        //currentSockets.splice(index, 1);
         players.splice(index, 1);
         socket.broadcast.emit('playerDis', index);
 
@@ -60,13 +56,14 @@ io.on('connection', socket => {
             col: data.col,
             id: socket.id
         })
-        currentSockets.push(socket);
+        //currentSockets.push(socket);
+        //console.log(Object.keys(players[0]));
 
         socket.broadcast.emit('newPl', data);
 
     })
     socket.on('pos', pos => {
-        let index = currentSockets.indexOf(socket);
+        let index = players.findIndex(element => element.id == socket.id);
         let data = {
             x: pos.x,
             y: pos.y,
@@ -74,16 +71,14 @@ io.on('connection', socket => {
         }
         socket.broadcast.emit('pos', data);
     });
+    socket.on('shooting', data => {
+        let index = players.findIndex(element => element.id == socket.id);
+        let resp = {
+            x: data.x,
+            y: data.y,
+            index
+        }
+        socket.broadcast.emit('shooting', resp);
+    });
 });
 
-
-
-function findIndex(sId, players) {
-    let index;
-    for (let i = 0; i < players.length; i++) {
-        if (players[i].id == sId) {
-            return index;
-
-        }
-    }
-}

@@ -77,7 +77,7 @@ function index(i, j, cols, rows) {
 function createMaze() {
     let cells = [];
     let stack = [];
-    let cell_r = 100;
+    let cell_r = 200;
     let current;
     let h = 800;
     let w = 800;

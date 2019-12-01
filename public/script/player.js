@@ -1,7 +1,7 @@
 class Player {
     constructor(x, y, col) {
         this.pos = createVector(x, y);
-        this.r = 15;
+        this.r = 23;
         this.aim = new Ray(this.pos);
         this.isShooting = false;
         this.col = col;
@@ -56,11 +56,12 @@ class Player {
         }
 
         stroke(255);
+        /*
         if (this.isShooting) {
             let point = this.aim.checkInter(sX, sY, walls);
             line(this.pos.x, this.pos.y, point.x, point.y);
 
-        }
+        }*/
         pop();
     }
 
@@ -119,6 +120,20 @@ class Player {
             }
         }
 
+
+    }
+
+    shoot(sX, sY, pt = null) {
+        push();
+        strokeWeight(5);
+        if (pt == null) {
+            pt = this.aim.checkInter(sX, sY, walls);
+        }
+        drawingContext.setLineDash([10, 20]);
+        line(this.pos.x, this.pos.y, pt.x, pt.y);
+        pop();
+
+        return pt;
 
     }
 
