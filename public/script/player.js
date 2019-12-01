@@ -57,7 +57,8 @@ class Player {
 
         stroke(255);
         if (this.isShooting) {
-            let point = this.aim.checkInter(sX, sY, walls);
+
+            let point = this.aim.checkInter(walls);
             line(this.pos.x, this.pos.y, point.x, point.y);
 
         }

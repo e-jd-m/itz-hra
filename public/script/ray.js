@@ -2,20 +2,22 @@ class Ray {
     constructor(pos) {
         this.pos = pos;
         this.dir = createVector(0, 1);
+        this.r = 5;
     }
 
-    set_dir(x, y) {
-        this.dir.x = x - this.pos.x;
-        this.dir.y = y - this.pos.y;
+    set_dir(theta) {
+
+        this.dir.set(this.pos.x + this.r * cos(theta), this.pos.y + this.r * sin(theta));
 
         //this.dir.normalize();
     }
+    set_pos(x, y) {
+    }
 
 
-    checkInter(x, y, walls) {
+    checkInter(walls) {
 
         //Math.sqrt((this.pos.x - pt.x) * (this.pos.x - pt.x) + (this.pos.y - pt.y) * (this.pos.y - pt.y));
-        let pt = createVector(x, y);
         let pts = [];
         for (const wall of walls) {
             const x1 = wall.a.x;
@@ -26,8 +28,8 @@ class Ray {
 
             const x3 = this.pos.x;
             const y3 = this.pos.y;
-            const x4 = pt.x;
-            const y4 = pt.y;
+            const x4 = this.dir.x;
+            const y4 = this.dir.y;
             //const x4 = this.pos.x + this.dir.x;
             //const y4 = this.pos.y + this.dir.y;
 
@@ -60,10 +62,11 @@ class Ray {
         }
         //console.log(closest);
         if (pts.length > 0) {
+
             return closest;
+
         }
 
-        return pt;
 
 
     }

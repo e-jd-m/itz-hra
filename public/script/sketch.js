@@ -9,6 +9,8 @@ let enemies = [];
 let bullet, wall, menuImg;
 let menu;
 let devMode = true;
+let theta = 0;
+let step = 0.08;
 
 p5.disableFriendlyErrors = true;
 
@@ -41,7 +43,6 @@ function setup() {
     });*/
 
     //console.log(player);
-
 
 
     for (let c of maze.cells) {
@@ -121,10 +122,11 @@ function draw() {
 
 
 
+
     player.show(mouseX, mouseY, walls);
 
     player.look(walls);
-    player.aim.set_dir(mouseX, mouseY);
+
     player.showHealth(15, 780);
     player.showAmmo(15, 760, bullet);
 
@@ -132,6 +134,16 @@ function draw() {
     menu.show(devMode);
     drawFramerate();
     drawCursor(mouseX, mouseY, 15);
+
+    if (keyIsDown(LEFT_ARROW)) {
+        theta -= step;
+    }
+
+    if (keyIsDown(RIGHT_ARROW)) {
+        theta += step;
+    }
+
+
 
     if (menu.devMode) {
         walls.forEach(wall => {
@@ -161,8 +173,9 @@ function draw() {
 
 
     checkMovement(allowMovement);
+    player.aim.set_dir(theta);
 
-    if (mouseIsPressed && !menu.showMenu) {
+    if (keyIsDown(33) && !menu.showMenu) {
         player.isShooting = true;
     } else {
         player.isShooting = false;

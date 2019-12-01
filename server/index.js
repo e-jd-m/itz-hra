@@ -30,7 +30,7 @@ io.on('connection', socket => {
 
     });
     socket.on('disconnect', () => {
-        console.log('user has dis');
+        //console.log('user has dis');
         let index = currentSockets.indexOf(socket);
 
 
@@ -39,7 +39,7 @@ io.on('connection', socket => {
                 index = i;
             }
         }*/
-        console.log(index);
+        //console.log(index);
         /*let index = findIndex(socket.id, players);
         console.log(index);*/
         currentSockets.splice(index, 1);
