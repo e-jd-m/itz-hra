@@ -1,7 +1,8 @@
 let maze;
 let fr = 0;
 let walls = [];
-let speed, allowMovement = true;
+const speed = 2
+let allowMovement = true;
 let cell_r;
 let cells = [];
 let socket;
@@ -9,6 +10,8 @@ let enemies = {};
 let bullet, wall, menuImg;
 let menu;
 let devMode = true;
+
+let shootCount = 0;
 
 const defGameServer = 'http://localhost:42069';
 
@@ -26,6 +29,9 @@ function setup() {
     const canvas = createCanvas(800, 800);
     canvas.parent('#game');
 
+    let address = prompt("zadej adresu: ", defGameServer);
+    socket = io.connect(address);
+
     noCursor();
 
     menu = new Menu();
@@ -34,7 +40,7 @@ function setup() {
         r: random(50, 255),
         g: random(50, 255),
         b: random(50, 255)
-    });
+    }, Math.floor(Math.random() * 3));
 
     /*player = new Player((maze.cells[5].x + cell_r / 2), (maze.cells[5].y + cell_r / 2), {
         r: random(50, 255),
@@ -70,20 +76,20 @@ function setup() {
     walls.push(new Wall(width, 0, width, height));
 
 
-    speed = 2;
-    let address = prompt("zadej adresu: ", defGameServer);
-    socket = io.connect(address);
+
+
 
 
 
     socket.emit('newPl', {
         x: player.pos.x,
         y: player.pos.y,
-        col: player.col
+        col: player.col,
+        s: player.skin
     });
     socket.on('newPl', data => {
         enemies[data.id] = {
-            player: new Player(data.x, data.y, data.col)
+            player: new Player(data.x, data.y, data.col, data.skin)
         }
 
 
@@ -92,7 +98,7 @@ function setup() {
 
         for (let [key, value] of Object.entries(data)) {
             enemies[key] = {
-                player: new Player(value.x, value.y, value.col)
+                player: new Player(value.x, value.y, value.col, value.skin)
             }
         }
         console.table(enemies);
@@ -119,7 +125,7 @@ function setup() {
             console.error('missing  enemy');
             return;
         }
-        //console.log(data.x, data.y);
+        //console.log(data.x, data.y);  
         enemy.player.shoot(data.x, data.y);
 
     });
@@ -131,9 +137,12 @@ function setup() {
 
     preventScrolling();
 
-    const interval = setInterval(function () {
+    setInterval(function () {
         addAmmo(player);
-    }, 2000);
+    }, 250);
+
+    //setInterval(() => shootCount++, 100);
+
 
 }
 let frm = [];
@@ -149,7 +158,7 @@ function draw() {
     player.look(walls);
     player.aim.set_dir(mouseX, mouseY);
     player.showHealth(15, 780);
-    player.showAmmo(15, 760, bullet);
+    //player.showAmmo(15, 760, bullet);
 
 
     menu.show(devMode);
@@ -172,7 +181,8 @@ function draw() {
     }
 
     for (let [key, value] of Object.entries(enemies)) {
-        enemies[key].player.show();
+        //enemies[key].player.show();
+        value.player.show();
     }
 
 
@@ -184,10 +194,13 @@ function draw() {
     checkMovement(allowMovement);
 
     if (mouseIsPressed && !menu.showMenu) {
-        let pt = player.shoot(mouseX, mouseY);
-        socket.emit('shooting', { x: mouseX, y: mouseY });
-    } else {
-        //player.isShooting = false;
+        if (player.ammo > 0) {
+            let pt = player.shoot(mouseX, mouseY);
+            socket.emit('shooting', { x: mouseX, y: mouseY });
+
+        }
+
+
     }
 
 
@@ -197,5 +210,14 @@ function draw() {
     sendPos(player.pos);
 
 
-}
 
+
+}
+/*
+function mouseClicked() {
+    if (!menu.showMenu) {
+        let pt = player.shoot(mouseX, mouseY);
+        socket.emit('shooting', { x: mouseX, y: mouseY });
+        console.log('shooting');
+    }
+}*/

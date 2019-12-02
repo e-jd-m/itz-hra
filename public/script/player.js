@@ -1,15 +1,18 @@
+
+
 class Player {
-    constructor(x, y, col) {
+    constructor(x, y, col, s) {
         this.pos = createVector(x, y);
         this.r = 23;
         this.aim = new Ray(this.pos);
         this.col = col;
         this.health = 100;
         this.maxHealth = 100;
-        this.ammo = 20;
-        this.maxAmmo = 20;
-        this.skins = ['points', 'lines', 'circle'];
-        this.skin = this.skins[2];
+        this.maxAmmo = 3;
+        this.ammo = this.maxAmmo;
+        //this.skins = ['points', 'lines', 'circle'];
+        this.skin = s;
+        this.isShooting = true;
 
 
     }
@@ -21,7 +24,7 @@ class Player {
         //ellipse(this.pos.x, this.pos.y, this.r * 2);
 
 
-        if (this.skin === `points`) {
+        if (this.skin === 0) {
             stroke(this.col.r, this.col.g, this.col.b);
             let x1, y1;
             for (let i = 0; i < 360; i += 1) {
@@ -33,7 +36,7 @@ class Player {
             noFill();
             ellipse(this.pos.x, this.pos.y, this.r * 2);
 
-        } else if (this.skin === 'lines') {
+        } else if (this.skin === 1) {
 
             stroke(this.col.r, this.col.g, this.col.b);
             let x1, y1;
@@ -47,7 +50,7 @@ class Player {
             noFill();
             ellipse(this.pos.x, this.pos.y, this.r * 2);
 
-        } else if (this.skin === 'circle') {
+        } else if (this.skin === 2 || !this.skin) {
 
             fill(this.col.r, this.col.g, this.col.b);
             noStroke();
@@ -117,18 +120,21 @@ class Player {
     }
 
     shoot(sX, sY, pt = null) {
-        if (this.ammo > 0) {
-            push();
-            strokeWeight(5);
-            if (pt == null) {
-                pt = this.aim.checkInter(sX, sY, walls);
-            }
-            drawingContext.setLineDash([10, 20]);
-            line(this.pos.x, this.pos.y, pt.x, pt.y);
-            pop();
 
-            return pt;
+        push();
+        strokeWeight(5);
+        if (pt == null) {
+            pt = this.aim.checkInter(sX, sY, walls);
         }
+        drawingContext.setLineDash([10, 20]);
+        line(this.pos.x, this.pos.y, pt.x, pt.y);
+        pop();
+        this.ammo--;
+
+
+
+        return pt;
+
 
     }
 

@@ -3,12 +3,22 @@ const express = require(`express`);
 const port = 42069;
 const app = express();
 const server = app.listen(port);
+/*
+const app = require('express')();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+const port = 42069;
+server.listen(port);*/
 
 const io = require('socket.io')(server);
 io.origins(`http://localhost:${port}`);
 const maze = require('./src/maze');
 
 app.use(express.static(`../public`));
+/*
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
+});*/
 
 let cells = maze.createMaze();
 
@@ -24,7 +34,7 @@ let players = {};
 //let currentSockets = [];
 
 io.on('connection', socket => {
-    //console.log(socket.id);
+    console.log(socket.id);
     socket.on('test', data => {
         console.log('recieved: ', data, 'from' + socket.id);
         socket.broadcast.emit('test', data);
@@ -49,6 +59,7 @@ io.on('connection', socket => {
             x: data.x,
             y: data.y,
             col: data.col,
+            skin: data.s,
             id: socket.id
         }
 
@@ -56,6 +67,7 @@ io.on('connection', socket => {
             x: data.x,
             y: data.y,
             col: data.col,
+            skin: data.s,
             id: socket.id
         }
 
