@@ -119,19 +119,18 @@ class Player {
 
     }
 
-    shoot(sX, sY, pt = null) {
+    shoot(sX, sY, ptSet = false) {
 
         push();
         strokeWeight(5);
-        if (pt == null) {
+        let pt = createVector(sX, sY);
+        if (!ptSet) {
             pt = this.aim.checkInter(sX, sY, walls);
         }
         drawingContext.setLineDash([10, 20]);
         line(this.pos.x, this.pos.y, pt.x, pt.y);
         pop();
-        this.ammo--;
-
-
+        //this.ammo--;
 
         return pt;
 

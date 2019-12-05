@@ -1,24 +1,26 @@
+
+
+const args = process.argv.slice(2);
+const portArg = +args[0];
+let port;
+
+if (!portArg) {
+    port = 8080;
+} else {
+    port = portArg;
+}
+
 const express = require(`express`);
 
-const port = 42069;
 const app = express();
-const server = app.listen(port);
-/*
-const app = require('express')();
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
-const port = 42069;
-server.listen(port);*/
+const server = app.listen(port, () => console.log(`listenig at ${port}`));
 
 const io = require('socket.io')(server);
 io.origins(`http://localhost:${port}`);
 const maze = require('./src/maze');
 
 app.use(express.static(`../public`));
-/*
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '../public', 'index.html'));
-});*/
+
 
 let cells = maze.createMaze();
 
@@ -34,9 +36,9 @@ let players = {};
 //let currentSockets = [];
 
 io.on('connection', socket => {
-    console.log(socket.id);
+    //console.log(socket.id);
     socket.on('test', data => {
-        console.log('recieved: ', data, 'from' + socket.id);
+        //console.log('recieved: ', data, 'from' + socket.id);
         socket.broadcast.emit('test', data);
 
     });
@@ -89,6 +91,8 @@ io.on('connection', socket => {
         let resp = {
             x: data.x,
             y: data.y,
+            tX: data.tX,
+            tY: data.tY,
             id: socket.id
 
         }

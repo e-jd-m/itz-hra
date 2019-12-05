@@ -13,7 +13,7 @@ let devMode = true;
 
 let shootCount = 0;
 
-const defGameServer = 'http://localhost:42069';
+const defGameServer = 'http://localhost:8080';
 
 p5.disableFriendlyErrors = true;
 
@@ -101,7 +101,7 @@ function setup() {
                 player: new Player(value.x, value.y, value.col, value.skin)
             }
         }
-        console.table(enemies);
+        //console.table(enemies);
     })
     socket.on('playerDis', id => {
         delete enemies[id];
@@ -126,7 +126,7 @@ function setup() {
             return;
         }
         //console.log(data.x, data.y);  
-        enemy.player.shoot(data.x, data.y);
+        enemy.player.shoot(data.tX, data.tY, true);
 
     });
 
@@ -180,10 +180,12 @@ function draw() {
 
     }
 
+
     for (let [key, value] of Object.entries(enemies)) {
         //enemies[key].player.show();
         value.player.show();
     }
+
 
 
 
@@ -196,7 +198,8 @@ function draw() {
     if (mouseIsPressed && !menu.showMenu) {
         if (player.ammo > 0) {
             let pt = player.shoot(mouseX, mouseY);
-            socket.emit('shooting', { x: mouseX, y: mouseY });
+
+            socket.emit('shooting', { x: mouseX, y: mouseY, tX: pt.x, tY: pt.y });
 
         }
 
