@@ -21,7 +21,7 @@ function preload() {
     maze = loadJSON('/maze');
     bullet = loadImage('img/bullet.png');
     wall = loadImage('img/wall.png');
-    menuImg = loadImage('img/menu.png');
+    menuImg = loadImage('img/Menu.png');
 }
 
 function setup() {
