@@ -16,7 +16,6 @@ const app = express();
 const server = app.listen(port, () => console.log(`listenig at ${port}`));
 
 const io = require('socket.io')(server);
-io.origins(`http://localhost:${port}`);
 const maze = require('./src/maze');
 
 app.use(express.static(`../public`));
