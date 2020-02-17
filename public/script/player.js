@@ -6,13 +6,14 @@ class Player {
         this.r = 23;
         this.aim = new Ray(this.pos);
         this.col = col;
-        this.health = 100;
+
         this.maxHealth = 100;
-        this.maxAmmo = 3;
+        this.health = this.maxHealth;
+
+        this.maxAmmo = 10;
         this.ammo = this.maxAmmo;
-        //this.skins = ['points', 'lines', 'circle'];
         this.skin = s;
-        this.isShooting = true;
+        this.isAlive = true;
 
 
     }
@@ -61,7 +62,8 @@ class Player {
         pop();
     }
 
-    look(walls) {
+
+    checkWalls(walls) {
 
         for (let i = 0; i < walls.length; i++) {
             const point = {
@@ -117,24 +119,78 @@ class Player {
         }
 
 
+
     }
 
-    shoot(sX, sY, ptSet = false) {
-
+    drawShot(tX, tY, sX, sY) {
         push();
         strokeWeight(5);
-        let pt = createVector(sX, sY);
-        if (!ptSet) {
-            pt = this.aim.checkInter(sX, sY, walls);
-        }
-        drawingContext.setLineDash([10, 20]);
-        line(this.pos.x, this.pos.y, pt.x, pt.y);
+        let startPt = createVector(sX, sY)
+        let endPt = createVector(tX, tY);
+
+        //drawingContext.setLineDash([10, 20]);
+        line(startPt.x, startPt.y, endPt.x, endPt.y);
         pop();
-        //this.ammo--;
+    }
+    shoot(tX, tY) {
+        let endPt = createVector(tX, tY);
 
-        return pt;
+        endPt = this.aim.checkInter(tX, tY, walls);
+        this.ammo--;
+
+        return { endPt, ids: this.checkHit(this.pos, endPt) };
+
+    }
+
+    checkHit(startPt, endPt) {
+        let ids = [];
+        for (let [key, value] of Object.entries(enemies)) {
+            const enemy = value.player;
+            let dx, dy, A, B, C, det, t1, t2;
+
+            dx = endPt.x - startPt.x;
+            dy = endPt.y - startPt.y;
+
+            A = dx * dx + dy * dy;
+            B = 2 * (dx * (startPt.x - enemy.pos.x) + dy * (startPt.y - enemy.pos.y));
+            C = (startPt.x - enemy.pos.x) ** 2 +
+                (startPt.y - enemy.pos.y) ** 2 -
+                enemy.r ** 2;
+
+            det = B * B - 4 * A * C;
+            if (det == 0) {
+                t1 = -B / (2 * A);
+                if (t1 <= 1 && t1 >= 0) {
+                    console.log('hit');
+                    ids.push(key);
+                }
+            } else if (det > 0) {
+                t1 = ((-B + Math.sqrt(det)) / (2 * A));
+                t2 = ((-B - Math.sqrt(det)) / (2 * A));
+
+                if ((t1 <= 1 && t1 >= 0) && (t2 <= 1 && t2 >= 0)) {
+                    console.log('hit');
+                    ids.push(key);
+                }
+            }
 
 
+        }
+        return ids;
+    }
+
+    addAmmo(amount = 1) {
+        if (this.ammo < this.maxAmmo)
+            this.ammo += amount;
+    }
+    gotHit(damage) {
+        if (this.health - damage <= 0) {
+            this.isAlive = false;
+            toggleMovement(false);
+            this.deathScreen();
+        }
+        if (this.health - damage >= 0)
+            this.health -= damage;
     }
 
     showHealth(x, y) {
@@ -226,5 +282,8 @@ class Player {
                 this.pos.y += speed;
             }
         }
+    }
+    deathScreen() {
+        alert("prohral jsi!")
     }
 }

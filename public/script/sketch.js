@@ -10,14 +10,14 @@ let enemies = {};
 let bullet, wall, menuImg;
 let menu;
 let devMode = true;
+let currentShots = [];
 
-let shootCount = 0;
-
-const defGameServer = 'http://localhost:8080';
+const defGameServer = 'http://localhost:3000';
 
 p5.disableFriendlyErrors = true;
 
 function preload() {
+    //natcteni obrazku
     maze = loadJSON('/maze');
     bullet = loadImage('img/bullet.png');
     wall = loadImage('img/wall.png');
@@ -29,12 +29,15 @@ function setup() {
     const canvas = createCanvas(800, 800);
     canvas.parent('#game');
 
+    //pripojeni na socket
     let address = prompt("zadej adresu: ", defGameServer);
     socket = io.connect(address);
 
+    //vypnuti kurzoru, pouzijeme vlastni 
     noCursor();
 
     menu = new Menu();
+
     cell_r = maze.cells[0].a;
     player = new Player((random(maze.cells).x + cell_r / 2), (random(maze.cells).y + cell_r / 2), {
         r: random(50, 255),
@@ -51,7 +54,8 @@ function setup() {
     //console.log(player);
 
 
-
+    //natcteni sten bunek bludiste do pole objektu
+    //vytvoreni bunek
     for (let c of maze.cells) {
         if (c.walls[0]) {
             walls.push(new Wall(c.x, c.y, c.x + c.a, c.y))
@@ -70,23 +74,31 @@ function setup() {
 
     }
 
+    //--------------------------------------------------------------------
+    //pridani sten na okraji hraci plochy
     walls.push(new Wall(0, 0, width, 0));
     walls.push(new Wall(0, 0, 0, height));
     walls.push(new Wall(0, height, width, height));
     walls.push(new Wall(width, 0, width, height));
+    //----------------------------------------------------------------------
 
 
 
 
 
 
+    //----------------------------------------------------------------------------------
+    //komunikace se socketem
 
+    //poslani hrace po pripojeni
     socket.emit('newPl', {
         x: player.pos.x,
         y: player.pos.y,
         col: player.col,
         s: player.skin
     });
+
+    //pripojeni noveho hrace
     socket.on('newPl', data => {
         enemies[data.id] = {
             player: new Player(data.x, data.y, data.col, data.skin)
@@ -94,6 +106,9 @@ function setup() {
 
 
     });
+
+    //ziskani vsech soucasnych hracu
+    //volano puze jednou po pripojeni
     socket.on('players', data => {
 
         for (let [key, value] of Object.entries(data)) {
@@ -103,11 +118,15 @@ function setup() {
         }
         //console.table(enemies);
     })
+
+    //hrac se odpojil
+    //smazani nepritele
     socket.on('playerDis', id => {
         delete enemies[id];
 
     });
 
+    //ziskani pozice nepritele
     socket.on('pos', data => {
         //console.log(data.index);
         const enemy = enemies[data.id];
@@ -119,6 +138,7 @@ function setup() {
 
     })
 
+    //strileni nepratel
     socket.on('shooting', data => {
         const enemy = enemies[data.id];
         if (!enemy) {
@@ -126,22 +146,47 @@ function setup() {
             return;
         }
         //console.log(data.x, data.y);  
-        enemy.player.shoot(data.tX, data.tY, true);
+
+        //vsechny vystreli jsou pridany do pole
+        //je uchovan cas kdy vystrel prisel
+        currentShots.push({
+            player: enemy.player,
+            sX: data.x,
+            sY: data.y,
+            tX: data.tX,
+            tY: data.tY,
+            startTime: new Date()
+        })
+        //enemy.player.shoot(data.tX, data.tY, true);
 
     });
+    socket.on('hit', ids => {
+        for (let id of ids) {
+            const hitPlayer = enemies[id];
+            if (!hitPlayer) {
+                console.log('got hit');
+                player.gotHit(20);
+                break;
+            }
+        }
+
+    })
 
     socket.on('test', data => {
         console.log('succ :)', data);
     });
 
+    //----------------------------------------------------------------------------------
+
 
     preventScrolling();
 
+    /*
     setInterval(function () {
         addAmmo(player);
-    }, 250);
+    }, 250);*/
 
-    //setInterval(() => shootCount++, 100);
+    setInterval(() => player.addAmmo(1), 1000);
 
 
 }
@@ -153,53 +198,77 @@ function draw() {
     //frameRate(5);
     //frm.push(frameRate());
 
+
     player.show(mouseX, mouseY, walls);
-
-    player.look(walls);
-    player.aim.set_dir(mouseX, mouseY);
     player.showHealth(15, 780);
-    //player.showAmmo(15, 760, bullet);
 
+    player.aim.set_dir(mouseX, mouseY);
+    //check walls skryva nebo zobrazuje viditelne steny
+    player.checkWalls(walls);
 
+    player.showAmmo(15, 760, bullet);
+
+    //vykresleni vsech vystrelu (od nepratel)
+    for (let i = 0; i < currentShots.length; i++) {
+        let shot = currentShots[i];
+
+        //pokud se vystrel stal dele nez pred 25 millis, tak je smazan
+        if (Date.now() - shot.startTime >= 25) {
+            currentShots.splice(i, 1);
+        }
+        shot.player.drawShot(shot.tX, shot.tY, shot.sX, shot.sY);
+        //console.log("recieved pt", shot.tX, shot.tY);
+    }
     menu.show(devMode);
     drawFramerate();
-    drawCursor(mouseX, mouseY, 15);
+
 
     if (menu.devMode) {
         walls.forEach(wall => {
             wall.show()
         });
 
-        /*
-        for (let i = 0; i < enemies.length; ++i) {
-            enemies[i].player.show(10, 10, walls);
-        }*/
 
         player.ammo = player.maxAmmo;
-        //player.health = player.maxHealtht;
+        player.health = player.maxHealth;
 
     }
 
-
+    //zobrazeni vsech nepratel
     for (let [key, value] of Object.entries(enemies)) {
         //enemies[key].player.show();
         value.player.show();
     }
 
-
-
-
-
-
-
-
     checkMovement(allowMovement);
 
-    if (mouseIsPressed && !menu.showMenu) {
-        if (player.ammo > 0) {
-            let pt = player.shoot(mouseX, mouseY);
+    menu.saveChanges();
 
-            socket.emit('shooting', { x: mouseX, y: mouseY, tX: pt.x, tY: pt.y });
+    sendPos(player.pos);
+    drawCursor(mouseX, mouseY, 15);
+}
+
+function mouseClicked() {
+
+    //strileni hrace
+    if (!menu.showMenu && player.isAlive) {
+        if (player.ammo > 0) {
+            let hit = player.shoot(mouseX, mouseY);
+            pt = hit.endPt;
+            currentShots.push({
+                player,
+                sX: player.pos.x,
+                sY: player.pos.y,
+                tX: pt.x,
+                tY: pt.y,
+                ptSet: true,
+                startTime: new Date()
+            })
+            if (hit.ids.length) {
+                socket.emit('hit', { ids: hit.ids });
+            }
+            socket.emit('shooting', { x: this.player.pos.x, y: this.player.pos.y, tX: pt.x, tY: pt.y });
+            //console.log("user point", pt);
 
         }
 
@@ -207,20 +276,4 @@ function draw() {
     }
 
 
-
-    menu.saveChanges();
-
-    sendPos(player.pos);
-
-
-
-
 }
-/*
-function mouseClicked() {
-    if (!menu.showMenu) {
-        let pt = player.shoot(mouseX, mouseY);
-        socket.emit('shooting', { x: mouseX, y: mouseY });
-        console.log('shooting');
-    }
-}*/

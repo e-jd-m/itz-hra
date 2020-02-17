@@ -7,27 +7,24 @@ class Menu {
         this.x = width / 2 - 100;
         this.y = height / 4;
         this.showFps = true;
-        this.allowSound = true;
+
         this.bttns = [];
         this.devMode = false;
 
         this.showFpsCheck = createCheckbox('Fps', this.showFps);
-        this.allowSoundCheck = createCheckbox('Sound', this.allowSound);
+
         this.devModeCheck = createCheckbox('devMode', this.devMode);
 
         let n = screen.width / 2 - width;
         this.showFpsCheck.position(this.x + 50, this.y + 100);
         this.showFpsCheck.hide();
 
-        this.allowSoundCheck.position(this.x + 50, this.y + 130);
-        this.allowSoundCheck.hide();
 
         this.devModeCheck.position(this.x + 50, this.y + 160);
         this.devModeCheck.hide();
         this.devModeCheck.parent(document.querySelector('#menu'));
 
         this.bttns.push(this.showFpsCheck);
-        this.bttns.push(this.allowSoundCheck);
         //this.bttns.push(this.devModeCheck);
 
         for (let el of this.bttns) {
@@ -81,13 +78,9 @@ class Menu {
 
         });
 
-        this.allowSoundCheck.changed(() => {
-            this.allowSound = !this.allowSound;
-        });
 
         this.devModeCheck.changed(() => {
             this.devMode = !this.devMode;
-            console.log(this.devMode);
         });
 
 

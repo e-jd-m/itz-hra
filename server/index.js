@@ -5,7 +5,7 @@ const portArg = +args[0];
 let port;
 
 if (!portArg) {
-    port = 8080;
+    port = 3000;
 } else {
     port = portArg;
 }
@@ -98,5 +98,8 @@ io.on('connection', socket => {
         }
         socket.broadcast.emit('shooting', resp);
     });
+    socket.on('hit', data => {
+        socket.broadcast.emit('hit', data.ids);
+    })
 });
 

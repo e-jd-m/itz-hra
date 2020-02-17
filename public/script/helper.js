@@ -69,22 +69,6 @@ function keyPressed() {
 }
 
 
-function mouseClicked() {
-    /* let total = 0;
-     for (let item of frm) {
-         total += item;
-
-     }
-     console.log(total / frm.length);*/
-
-
-    if (player.ammo === 0) {
-        return
-    }
-    if (!menu.showMenu)
-        player.ammo -= 1;
-}
-
 
 function sendPos(pos) {
     socket.emit('pos', {
