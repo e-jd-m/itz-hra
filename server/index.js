@@ -2,12 +2,10 @@
 
 const args = process.argv.slice(2);
 const portArg = +args[0];
-let port;
+let port = process.env.PORT || 3000;
 
-if (!portArg) {
-    port = 3000;
-} else {
-    port = portArg;
+if (portArg) {
+    port = process.env.PORT || portArg;
 }
 
 const express = require(`express`);
