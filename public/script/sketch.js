@@ -130,10 +130,6 @@ function setup() {
     socket.on('pos', data => {
         //console.log(data.index);
         const enemy = enemies[data.id];
-        if (!enemy) {
-            console.error('missing  enemy');
-            return;
-        }
         enemy.player.set_pos(data.x, data.y);
 
     })

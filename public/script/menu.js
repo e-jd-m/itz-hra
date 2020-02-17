@@ -66,9 +66,17 @@ class Menu {
 
 
         } else {
-            $('*').css(`cursor`, `auto`);
+            for (let el of document.querySelectorAll("*")) {
+                el.style.cursor = "auto";
+            }
+            //$('*').css(`cursor`, `auto`);
             noCursor();
         }
+        /*<script
+        src = "https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity = "sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin = "anonymous"
+            ></script >*/
     }
 
     saveChanges() {
