@@ -112,7 +112,7 @@ class Player {
 
 
             if (ok) {
-                stroke(0, 255, 0);
+                //stroke(0, 255, 0);
                 //line(this.pos.x, this.pos.y, point.x, point.y);
                 walls[i].show();
             }
