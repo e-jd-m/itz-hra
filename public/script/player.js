@@ -18,6 +18,8 @@ class Player {
 
     }
 
+    //---------------------------------------------------------------------------------------
+    //vykresleni hrace
     show() {
         push();
         //fill(this.col.r, this.col.g, this.col.b);
@@ -37,7 +39,9 @@ class Player {
             noFill();
             ellipse(this.pos.x, this.pos.y, this.r * 2);
 
-        } else if (this.skin === 1) {
+        }
+        //---------------------------------------------------------------------------------------
+        else if (this.skin === 1) {
 
             stroke(this.col.r, this.col.g, this.col.b);
             let x1, y1;
@@ -51,7 +55,9 @@ class Player {
             noFill();
             ellipse(this.pos.x, this.pos.y, this.r * 2);
 
-        } else if (this.skin === 2 || !this.skin) {
+        }
+        //---------------------------------------------------------------------------------------
+        else if (this.skin === 2 || !this.skin) {
 
             fill(this.col.r, this.col.g, this.col.b);
             noStroke();
@@ -61,8 +67,11 @@ class Player {
 
         pop();
     }
+    //---------------------------------------------------------------------------------------
 
 
+    //kontrola vyditelnych sten
+    //---------------------------------------------------------------------------------------
     checkWalls(walls) {
 
         for (let i = 0; i < walls.length; i++) {
@@ -121,7 +130,10 @@ class Player {
 
 
     }
+    //---------------------------------------------------------------------------------------
 
+    //vykresleni vystrelu
+    //---------------------------------------------------------------------------------------
     drawShot(tX, tY, sX, sY) {
         push();
         strokeWeight(5);
@@ -132,6 +144,10 @@ class Player {
         line(startPt.x, startPt.y, endPt.x, endPt.y);
         pop();
     }
+    //---------------------------------------------------------------------------------------
+
+    //zjisteni souradnic vystrelu
+    //---------------------------------------------------------------------------------------
     shoot(tX, tY) {
         let endPt = createVector(tX, tY);
 
@@ -141,7 +157,10 @@ class Player {
         return { endPt, ids: this.checkHit(this.pos, endPt) };
 
     }
+    //---------------------------------------------------------------------------------------
 
+    //kontorla zasahu nepritele
+    //---------------------------------------------------------------------------------------
     checkHit(startPt, endPt) {
         let ids = [];
         for (let [key, value] of Object.entries(enemies)) {
@@ -178,11 +197,15 @@ class Player {
         }
         return ids;
     }
+    //---------------------------------------------------------------------------------------
 
     addAmmo(amount = 1) {
         if (this.ammo < this.maxAmmo)
             this.ammo += amount;
     }
+
+    //---------------------------------------------------------------------------------------
+    //funkce volana po obdrzeni zasahu
     gotHit(damage) {
         if (this.health - damage <= 0) {
             this.isAlive = false;
@@ -192,7 +215,10 @@ class Player {
         if (this.health - damage >= 0)
             this.health -= damage;
     }
+    //---------------------------------------------------------------------------------------
 
+    //---------------------------------------------------------------------------------------
+    // vykresleni zivotu a naboju
     showHealth(x, y) {
         push();
         fill(255, 0, 0);
@@ -229,13 +255,15 @@ class Player {
         pop();
     }
 
-
+    //---------------------------------------------------------------------------------------
 
 
     set_pos(x, y) {
         this.pos.set(x, y);
     }
 
+    //---------------------------------------------------------------------------------------
+    //funkce pro pohyb hrace
     move_x(speed, r, cells) {
         let i = Math.floor(this.pos.x / r);
         let j = Math.floor(this.pos.y / r);
@@ -283,6 +311,7 @@ class Player {
             }
         }
     }
+    //---------------------------------------------------------------------------------------
     deathScreen() {
         alert("prohral jsi!")
     }

@@ -1,3 +1,6 @@
+//objekt, jednotliva bunka hraciho pole
+//obsahuje souradnice, pozici na hraci plose, seznam sten
+
 class Cell {
     constructor(i, j, a, wallsExist = []) {
         this.a = a;

@@ -1,3 +1,7 @@
+
+//pomocne funkce
+
+//funkce pro zastaveni posouvani obrazu pri zmacknuti sipek
 function preventScrolling() {
     window.addEventListener("keydown", function (e) {
         // space and arrow keys
@@ -7,6 +11,7 @@ function preventScrolling() {
     }, false)
 }
 
+// prevedeni indexu z 2D pole na index v normalni poli
 function index(i, j, cols, rows) {
     if (i < 0 || j < 0 || i > cols - 1 || j > rows - 1)
         return -1;
@@ -14,6 +19,7 @@ function index(i, j, cols, rows) {
     return i + j * cols;
 }
 
+//vykresleni vlastniho kurzoru
 function drawCursor(x, y, r) {
     push();
     noFill();
@@ -26,6 +32,7 @@ function drawCursor(x, y, r) {
     pop();
 }
 
+//vykresleni snimku za vterinu
 function drawFramerate() {
     if (menu.showFps) {
         push();
@@ -57,6 +64,7 @@ function getDistance(x1, y1, x2, y2) {
     return (dx * dx + dy * dy);
 }
 
+//listener na zmacknuti esc, otevira menu
 function keyPressed() {
     if (keyCode === 27) {
         menu.showMenu = !menu.showMenu;
@@ -69,7 +77,7 @@ function keyPressed() {
 }
 
 
-
+//odeslani pozice pres socket
 function sendPos(pos) {
     socket.emit('pos', {
         x: pos.x,
@@ -77,7 +85,7 @@ function sendPos(pos) {
     });
 }
 
-
+//kontorla, zda hrac macka klavesi pro pohyb
 function checkMovement(allowMovement) {
     if (allowMovement) {
         if (keyIsDown(65)) {

@@ -1,5 +1,5 @@
 
-
+//ziskani portu pri spusteni
 const args = process.argv.slice(2);
 const portArg = +args[0];
 let port = process.env.PORT || 3000;
@@ -21,6 +21,7 @@ app.use(express.static(`../public`));
 
 let cells = maze.createMaze();
 
+//pokud prijde zadost /maze, tak server posle vygenerovane hraci pole
 app.get(`/maze`, (req, res) => {
 
     res.send({
@@ -31,6 +32,9 @@ app.get(`/maze`, (req, res) => {
 
 let players = {};
 //let currentSockets = [];
+
+//---------------------------------------------------------------------------------------
+//socket.io
 
 io.on('connection', socket => {
     //console.log(socket.id);

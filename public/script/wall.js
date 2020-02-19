@@ -1,9 +1,12 @@
+//vsechny steny hraciho pole jsou ulozeny v poli objektu wall
+
 class Wall {
     constructor(x1, y1, x2, y2) {
         this.a = createVector(x1, y1);
         this.b = createVector(x2, y2);
 
     }
+    //vykresleni steny
     show() {
         stroke(255);
         //ellipse(this.a.x, this.a.y, 3);
@@ -12,17 +15,7 @@ class Wall {
         //line(this.a.x + 3, this.a.y - 3, this.b.x, this.b.y);
         line(this.a.x, this.a.y, this.b.x, this.b.y);
 
-        /*let tolerance = 0.01;
 
-        if (this.a.y - this.b.y < tolerance) {
-            let w = Math.sqrt((this.a.x - this.b.x) * (this.a.x - this.b.x) + (this.a.y - this.b.y) * (this.a.y - this.b.y));
-            //image(wall, this.a.x, this.a.y, w , 5);
-            rect(this.a.x, this.a.y, w, 5);
-        } else {
-            let h = Math.sqrt((this.a.x - this.b.x) * (this.a.x - this.b.x) + (this.a.y - this.b.y) * (this.a.y - this.b.y));
-            //image(wall, this.a.x, this.a.y, 5, h );
-            rect(this.a.x, this.a.y, 5, h)
-        }*/
 
 
     }

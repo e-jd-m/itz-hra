@@ -1,3 +1,5 @@
+//objekt, obsahuje herni menu
+
 class Menu {
     constructor() {
         this.menuImg = menuImg;
@@ -33,13 +35,13 @@ class Menu {
 
     }
 
-
+    //funkce, ktera schova vsechny cudliky v menu
     hide() {
         this.bttns.forEach(bttns => bttns.hide());
         this.devModeCheck.hide();
         toggleMovement(true);
     }
-
+    //zobrazeni menu
     show(devMode) {
         if (this.showMenu) {
 
@@ -78,7 +80,7 @@ class Menu {
         crossorigin = "anonymous"
             ></script >*/
     }
-
+    //ulozeni zmen 
     saveChanges() {
 
         this.showFpsCheck.changed(() => {

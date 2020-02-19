@@ -1,3 +1,5 @@
+//generovani bludiste/hraci plochy
+
 class Cell {
     constructor(i, j, a, cols, rows) {
         this.a = a;

@@ -1,3 +1,5 @@
+//ray je strela hrace
+
 class Ray {
     constructor(pos) {
         this.pos = pos;
@@ -11,7 +13,7 @@ class Ray {
         //this.dir.normalize();
     }
 
-
+    //kontorola narazu do steny
     checkInter(x, y, walls) {
 
         //Math.sqrt((this.pos.x - pt.x) * (this.pos.x - pt.x) + (this.pos.y - pt.y) * (this.pos.y - pt.y));
