@@ -10,15 +10,18 @@ if (portArg) {
 
 const express = require(`express`);
 
+
+//vyvoreni serveru
 const app = express();
 const server = app.listen(port, () => console.log(`listenig at ${port}`));
 
 const io = require('socket.io')(server);
 const maze = require('./src/maze');
 
+//hostovani statickehe slozky public
 app.use(express.static(`../public`));
 
-
+//vygenerovani bludiste
 let cells = maze.createMaze();
 
 //pokud prijde zadost /maze, tak server posle vygenerovane hraci pole
@@ -43,12 +46,14 @@ io.on('connection', socket => {
         socket.broadcast.emit('test', data);
 
     });
+    //hrac se odpojil
     socket.on('disconnect', () => {
 
         delete players[socket.id];
         socket.broadcast.emit('playerDis', socket.id);
 
     })
+    //pripojil se novy hrac
     socket.on('newPl', data => {
         //console.log('New  Player');
         //console.log(data);
@@ -77,6 +82,7 @@ io.on('connection', socket => {
         socket.broadcast.emit('newPl', resp);
 
     })
+    //pozice hrace
     socket.on('pos', pos => {
 
         let data = {
@@ -87,6 +93,7 @@ io.on('connection', socket => {
         }
         socket.broadcast.emit('pos', data);
     });
+    //hrac vystrelil
     socket.on('shooting', data => {
 
         let resp = {
@@ -99,6 +106,7 @@ io.on('connection', socket => {
         }
         socket.broadcast.emit('shooting', resp);
     });
+    //hrac nekoho zasahnul
     socket.on('hit', data => {
         socket.broadcast.emit('hit', data.ids);
     })
