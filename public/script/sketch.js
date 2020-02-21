@@ -130,7 +130,8 @@ function setup() {
     socket.on('pos', data => {
         //console.log(data.index);
         const enemy = enemies[data.id];
-        enemy.player.set_pos(data.x, data.y);
+        if (enemy)
+            enemy.player.set_pos(data.x, data.y);
 
     })
 
