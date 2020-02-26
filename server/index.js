@@ -27,9 +27,7 @@ let cells = maze.createMaze();
 //pokud prijde zadost /maze, tak server posle vygenerovane hraci pole
 app.get(`/maze`, (req, res) => {
 
-    res.send({
-        cells
-    })
+    res.send({ cells, port })
 
 });
 

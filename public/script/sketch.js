@@ -12,21 +12,24 @@ let menu;
 let devMode = true;
 let currentShots = [];
 
-const defGameServer = 'http://localhost:3000';
+let defGameServer;
 
 p5.disableFriendlyErrors = true;
-
+let resp;
 function preload() {
     //natcteni obrazku
-    maze = loadJSON('/maze');
+    resp = loadJSON('/maze');
+
     bullet = loadImage('img/bullet.png');
     wall = loadImage('img/wall.png');
     menuImg = loadImage('img/Menu.png');
 }
 
 function setup() {
+    maze = resp.cells;
+    defGameServer = `http://localhost:${resp.port}`;
 
-    const canvas = createCanvas(800, 800);
+    const canvas = createCanvas(maze.w, maze.h);
     canvas.parent('#game');
 
     //pripojeni na socket
@@ -183,10 +186,11 @@ function setup() {
         addAmmo(player);
     }, 250);*/
 
-    setInterval(() => player.addAmmo(1), 1000);
+    setInterval(() => player.addAmmo(1), 1500);
 
 
 }
+let god = false;
 let frm = [];
 let prof = [];
 
@@ -197,13 +201,13 @@ function draw() {
 
 
     player.show(mouseX, mouseY, walls);
-    player.showHealth(15, 780);
+    player.showHealth(15, height - 20);
 
     player.aim.set_dir(mouseX, mouseY);
     //check walls skryva nebo zobrazuje viditelne steny
     player.checkWalls(walls);
 
-    player.showAmmo(15, 760, bullet);
+    player.showAmmo(15, height - 40, bullet);
 
     //vykresleni vsech vystrelu (od nepratel)
     for (let i = 0; i < currentShots.length; i++) {
@@ -224,11 +228,10 @@ function draw() {
         walls.forEach(wall => {
             wall.show()
         });
-
-
+    }
+    if (menu.devMode || god) {
         player.ammo = player.maxAmmo;
         player.health = player.maxHealth;
-
     }
 
     //zobrazeni vsech nepratel

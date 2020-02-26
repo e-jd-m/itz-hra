@@ -79,10 +79,10 @@ function index(i, j, cols, rows) {
 function createMaze() {
     let cells = [];
     let stack = [];
-    let cell_r = 200;
+    let cell_r = 90;
     let current;
-    let h = 800;
-    let w = 800;
+    let h = 900;
+    let w = 900;
     let rows = Math.floor(h / cell_r);
     let cols = Math.floor(w / cell_r);
 
@@ -115,7 +115,7 @@ function createMaze() {
         }
     } while (stack.length);
 
-    return cells;
+    return { cells, w, h };
 }
 
 module.exports = {

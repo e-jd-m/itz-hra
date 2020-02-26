@@ -9,11 +9,13 @@ class Menu {
         this.x = width / 2 - 100;
         this.y = height / 4;
         this.showFps = true;
+        this.rays = false;
 
         this.bttns = [];
         this.devMode = false;
 
         this.showFpsCheck = createCheckbox('Fps', this.showFps);
+        this.showRaysCheck = createCheckbox('Show Rays', this.rays);
 
         this.devModeCheck = createCheckbox('devMode', this.devMode);
 
@@ -26,7 +28,11 @@ class Menu {
         this.devModeCheck.hide();
         this.devModeCheck.parent(document.querySelector('#menu'));
 
+        this.showRaysCheck.position(this.x + 50, this.y + 130);
+        this.showRaysCheck.hide();
+
         this.bttns.push(this.showFpsCheck);
+        this.bttns.push(this.showRaysCheck);
         //this.bttns.push(this.devModeCheck);
 
         for (let el of this.bttns) {
@@ -49,7 +55,7 @@ class Menu {
             fill(0);
             strokeWeight(5);
             rect(this.x, this.y, this.w, this.h);
-            image(menuImg, 330, 200, menuImg.width * 2, menuImg.height * 2 - 5);
+            image(menuImg, width / 2 - menuImg.width, height / 4, menuImg.width * 2, menuImg.height * 2 - 5);
 
             pop();
 
@@ -92,6 +98,10 @@ class Menu {
         this.devModeCheck.changed(() => {
             this.devMode = !this.devMode;
         });
+        this.showRaysCheck.changed(() => {
+            this.rays = !this.rays;
+        });
+
 
 
     }

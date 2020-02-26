@@ -5,6 +5,10 @@ label {
 body {
   text-align: center;
   background: #232423;
+  color: white;
+}
+a {
+  color: aliceblue;
 }
 
 #game {

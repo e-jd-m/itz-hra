@@ -109,8 +109,12 @@ class Player {
 
                     if (t > 0 && t < 1 && u > 0 && u < 1) {
                         ok = false;
-                        //stroke(255, 0, 0);
-                        //line(this.pos.x, this.pos.y, point.x, point.y);
+                        if (menu.rays) {
+                            push();
+                            stroke(255, 0, 0);
+                            line(this.pos.x, this.pos.y, point.x, point.y);
+                            pop();
+                        }
                         break;
                     }
                 }
@@ -121,8 +125,12 @@ class Player {
 
 
             if (ok) {
-                //stroke(0, 255, 0);
-                //line(this.pos.x, this.pos.y, point.x, point.y);
+                if (menu.rays) {
+                    push();
+                    stroke(0, 255, 0);
+                    line(this.pos.x, this.pos.y, point.x, point.y);
+                    pop();
+                }
                 walls[i].show();
             }
         }
@@ -313,6 +321,6 @@ class Player {
     }
     //---------------------------------------------------------------------------------------
     deathScreen() {
-        alert("prohral jsi!")
+        location.replace("deathScreen.html");
     }
 }
