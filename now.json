@@ -3,7 +3,7 @@
   "builds": [
     { "src": "/server/index.js", "use": "@now/node-server" },
     {
-      "src": "/public/index.js",
+      "src": "/public/index.html",
       "use": "@now/static"
     }
   ],
