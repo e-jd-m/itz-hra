@@ -19,7 +19,7 @@ const io = require('socket.io')(server);
 const maze = require('./src/maze');
 
 //hostovani statickehe slozky public
-app.use(express.static(`../public`));
+//app.use(express.static(`../public`));
 
 //vygenerovani bludiste
 let cells = maze.createMaze();
