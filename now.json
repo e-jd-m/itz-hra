@@ -9,6 +9,10 @@
     {
       "src": "/public/script/*.js",
       "use": "@now/static"
+    },
+    {
+      "src": "/public/img/*",
+      "use": "@now/static"
     }
   ],
   "routes": [
