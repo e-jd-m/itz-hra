@@ -26,6 +26,11 @@
       "src": "/public/script/(.*)",
       "dest": "/public/script/$1",
       "methods": ["GET"]
+    },
+    {
+      "src": "/img/(.*)",
+      "dest": "/public/img/$1",
+      "methods": ["GET"]
     }
   ]
 }
