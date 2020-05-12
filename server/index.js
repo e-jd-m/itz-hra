@@ -2,7 +2,7 @@
 //ziskani portu pri spusteni
 const args = process.argv.slice(2);
 const portArg = +args[0];
-let port = process.env.PORT || 3000;
+let port = process.env.PORT || 5000;
 
 if (portArg) {
     port = process.env.PORT || portArg;
@@ -19,7 +19,7 @@ const io = require('socket.io')(server);
 const maze = require('./src/maze');
 
 //hostovani statickehe slozky public
-//app.use(express.static(`../public`));
+app.use(express.static(`../public`));
 
 //vygenerovani bludiste
 let cells = maze.createMaze();
