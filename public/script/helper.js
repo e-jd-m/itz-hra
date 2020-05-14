@@ -65,9 +65,13 @@ function getDistance(x1, y1, x2, y2) {
 }
 
 //listener na zmacknuti esc, otevira menu
-function keyPressed() {
+function keyReleased() {
+    //console.log('keyCode', keyCode);
+
     if (keyCode === 27) {
         menu.showMenu = !menu.showMenu;
+        //console.log('menu.showMenu', menu.showMenu);
+
         if (!menu.showMenu) {
             menu.hide();
         }
